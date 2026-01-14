@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Засварын захиалга</title>
+    <link rel="stylesheet" href="../css/zahialga.css">
+    <!-- <script defer src="../js/zahialga.js"></script> -->
+</head>
+<body>
+
+<div class="order-container">
+  <h2>🛠 Засварын захиалга өгөх</h2>
+
+  <form id="repairForm">
+
+    <!-- Засварын төрөл -->
+    <label>Засварын төрөл</label>
+    <select required>
+      <option value="">Сонгох</option>
+      <option value="internet">Internet</option>
+      <option value="device">Төхөөрөмж</option>
+      <option value="software">Программ</option>
+    </select>
+
+    <!-- Үйлчилгээ авах төрөл -->
+    <label>Үйлчилгээ авах төрөл</label>
+    <select required>
+      <option value="">Сонгох</option>
+      <option value="branch">🏢 Салбар дээр ирж үйлчилгээ авах</option>
+      <option value="on_call">🚗 Дуудлагаар хүссэн газраа дуудаж үйлчилгээ авах</option>
+      <option value="post">📦 Шуудангаар явуулах</option>
+    </select>
+
+    <!-- Байршил -->
+    <label>Байршил</label>
+    <input type="text" placeholder="Ж: 3-р хороо, 12-р байр" required>
+
+    <!-- Ажлын нэр -->
+    <label>Гүйцэтгэх ажлын нэр</label>
+    <input type="text" required>
+
+    <!-- Тайлбар -->
+    <label>Дэлгэрэнгүй тайлбар</label>
+    <textarea rows="4" placeholder="Асуудлаа дэлгэрэнгүй бичнэ үү"></textarea>
+
+    <!-- Огноо -->
+    <div class="date-group">
+      <div>
+        <a href="#" style="font-size: 12px; color: red;">
+          ⚠ Яаралтай захиалга бол доорх он сарыг заавал бөглөнө үү
+        </a>
+        <label>Эхлэх огноо</label>
+        <input type="date" required>
+      </div>
+      <div>
+        <label>Дуусах огноо</label>
+        <input type="date" required>
+      </div>
+    </div>
+
+    <button type="submit">📨 Захиалга илгээх</button>
+
+  </form>
+</div>
+
+<script>
+document.getElementById("repairForm").addEventListener("submit", e => {
+  e.preventDefault();
+  alert("✅ Засварын захиалга амжилттай илгээгдлээ");
+  e.target.reset();
+});
+</script>
+
+</body>
+</html>

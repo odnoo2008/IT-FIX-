@@ -1,0 +1,388 @@
+/* .my-requests {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.my-requests table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.my-requests th, .my-requests td {
+  padding: 12px;
+  border-bottom: 1px solid #334155;
+  text-align: center;
+}
+
+.status.active { color: #22c55e; }
+.status.paused { color: #facc15; }
+.status.cancelled { color: #ef4444; }
+
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pause { background: #eab308; }
+.resume { background: #22c55e; }
+.cancel { background: #ef4444; color: #fff; }
+================= Modal background =================
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.75);
+  z-index: 999;
+}
+
+/* ================= Modal box ================= */
+/* .modal-box {
+  width: 360px;
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  padding: 25px 28px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  color: #dbeafe;
+  animation: popup 0.35s ease;
+} */
+
+/* ================= Title ================= */
+/* .modal-box h3 {
+  margin: 0 0 18px;
+  font-size: 20px;
+  text-align: center;
+  color: #93c5fd;
+} */
+
+/* ================= Input ================= */
+/* .modal-box input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #e0f2fe;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.modal-box input::placeholder {
+  color: #94a3b8;
+}
+
+.modal-box input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+} */
+
+/* ================= Error ================= */
+/* .error {
+  color: #f87171;
+  font-size: 13px;
+  margin-bottom: 8px;
+} */
+
+/* ================= Button ================= */
+/* .modal-box button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-box button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37,99,235,0.5);
+} */
+
+/* ================= Close ================= */
+/* .modal-box p {
+  margin-top: 14px;
+  text-align: center;
+  cursor: pointer;
+  color: #93c5fd;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.modal-box p:hover {
+  color: #bfdbfe;
+  text-decoration: underline;
+} */
+
+/* ================= Animation ================= */
+/* @keyframes popup {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+.login-container {
+  max-width: 420px;
+  margin: 80px auto;      /* голлуулна */
+  /* padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #fff;
+  border-radius: 10px;
+} */
+
+/* БҮХ input ижил харагдана */
+/* .login-container input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+} */
+
+/* ❗ Хэрвээ password-д position өгсөн бол ИНГЭЖ ЦЭВЭРЛЭ */
+/* input[type="password"] {
+  position: static !important;
+}
+
+ */ 
+
+
+ /* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* ================= BODY ================= */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+/* ================= HEADER ================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: #020617;
+}
+
+.header .logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.header nav a {
+  margin-left: 20px;
+  color: #c7d2fe;
+  text-decoration: none;
+}
+
+.header nav a:hover {
+  color: #fff;
+}
+
+/* ================= SOCIAL BAR ================= */
+.social-bar {
+  position: fixed;
+  right: 15px;
+  top: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-bar img {
+  width: 36px;
+}
+
+/* ================= LOGIN CONTAINER ================= */
+.login-container {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  color: #000;
+}
+
+.login-container h2 {
+  text-align: center;
+}
+
+/* ================= ROLE SELECT ================= */
+.role-select {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.role-select button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #e5e7eb;
+  cursor: pointer;
+}
+
+.role-select button:hover {
+  background: #c7d2fe;
+}
+
+/* ================= INPUT ================= */
+.login-container input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ❗ PASSWORD ҮСРЭХ АСУУДАЛ БҮРЭН ДАРАГДСАН */
+input[type="password"] {
+  position: static !important;
+}
+
+/* ================= BUTTON ================= */
+.login-btn {
+  padding: 12px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ================= LINKS ================= */
+.links {
+  text-align: center;
+  font-size: 14px;
+}
+
+.links a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* ================= ERROR ================= */
+.error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 15px;
+  background: #020617;
+  font-size: 14px;
+}
+
+/* ================= MODAL BACKGROUND ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 40, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ================= MODAL BOX ================= */
+.modal-box {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  padding: 25px;
+  border-radius: 14px;
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: popup 0.3s ease;
+}
+
+.modal-box h3 {
+  text-align: center;
+  color: #93c5fd;
+}
+
+.modal-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #fff;
+}
+
+.modal-box button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+.modal-box button:hover {
+  background: #1d4ed8;
+}
+
+.modal-box p {
+  text-align: center;
+  cursor: pointer;
+  color: #93c5fd;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes popup {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

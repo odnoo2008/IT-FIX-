@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <title>Хувь хүний хэсэг</title>
+  <link rel="stylesheet" href="../css/huwihvn.css">
+  
+  <link rel="stylesheet" href="../css/mniihvselt.css">
+    <link rel="stylesheet" href="../css/medeelel.css">
+  <style>
+  .order-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+  padding: 12px;
+  border-bottom: 1px solid #334155;
+  text-align: left;
+}
+
+.order-table th {
+  background: #1e3a8a;
+  color: #e0e7ff;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Төлөвүүд */
+.pending { background: #fde68a; color: #92400e; }
+.paused  { background: #bfdbfe; color: #1e40af; }
+.done    { background: #bbf7d0; color: #065f46; }
+.cancelled { background: #fecaca; color: #7f1d1d; }
+
+/* Buttons */
+.btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+.pause { background: #2563eb; color: white; }
+.cancel { background: #ef4444; color: white; }
+.view { background: #10b981; color: white; }
+</style>
+</head>
+<body>
+<script>
+function pauseOrder(btn) {
+  const row = btn.closest("tr");
+  row.querySelector(".status").textContent = "Түр зогссон";
+  row.querySelector(".status").className = "status paused";
+}
+
+function cancelOrder(btn) {
+  if (!confirm("Та захиалгаа цуцлахдаа итгэлтэй байна уу?")) return;
+  const row = btn.closest("tr");
+  row.querySelector(".status").textContent = "Цуцлагдсан";
+  row.querySelector(".status").className = "status cancelled";
+  row.querySelectorAll("button").forEach(b => b.disabled = true);
+}
+
+function viewOrder() {
+  alert("📄 Захиалгын дэлгэрэнгүй мэдээлэл (дараагийн алхам)");
+}
+</script>
+<script>
+function markRead(btn) {
+  const notify = btn.closest(".notification");
+  notify.classList.remove("unread");
+  btn.remove();
+}
+</script>
+<script>
+function reply(btn) {
+  const text = prompt("Админы хариу:");
+  if (text) {
+    alert("✅ Хариу амжилттай илгээгдлээ");
+  }
+}
+</script>
+
+<header class="header">
+  <a href="/pages/index.html"><div class="logo">💻 Компьютер засвар хувь хүн</div></a>
+  <div class="user">Сайн байна уу,👋</div>
+</header>
+
+<div class="sidebar">
+  <a onclick="show('order')">🛠 Захиалга өгөх</a>
+  <a onclick="show('myOrders')">📋 Миний хүсэлтүүд</a>
+  <a onclick="show('notify')">🔔 Мэдэгдэл</a>
+  <a onclick="show('feedback')">💬 Сэтгэгдэл</a>
+  <a onclick="show('profile')">👤 Профайл</a>
+  <a onclick="show('time')">⏰ Цаг захиалах</a>
+</div>
+
+<div class="main">
+
+  <!-- Захиалга өгөх -->
+  <div id="order" class="card">
+    <h2>🛠 Засварын захиалга</h2>
+
+    <label>Засварын төрөл</label>
+    <select>
+      <option>Hardware</option>
+      <option>Software</option>
+      <option>Internet</option>
+    </select>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    <label>Байршил</label>
+    <input placeholder="Ж: 3-р хороо">
+
+    <label>
+      <input type="checkbox"> Яаралтай бол дээрх checkbox бөглөнө үү
+    </label>
+
+    <label>Ажлын нэр</label>
+    <input>
+
+    <label>Дэлгэрэнгүй тайлбар</label>
+    <textarea></textarea>
+
+    <button>Захиалга илгээх</button>
+  </div>
+
+  <!-- Миний хүсэлтүүд -->
+  <div id="myOrders" class="card">
+  <h2>📋 Миний хүсэлтүүд</h2>
+
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Засварын төрөл</th>
+        <th>Огноо</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+
+    <tbody id="orderBody">
+      <tr>
+        <td>1</td>
+        <td>Internet</td>
+        <td>2026-01-12</td>
+        <td><span class="status pending">Хүлээгдэж буй</span></td>
+        <td>
+          <button class="btn pause" onclick="pauseOrder(this)">Түр зогсоох</button>
+          <button class="btn cancel" onclick="cancelOrder(this)">Цуцлах</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>2</td>
+        <td>Hardware</td>
+        <td>2026-01-08</td>
+        <td><span class="status done">Дууссан</span></td>
+        <td>
+          <button class="btn view" onclick="viewOrder()">Дэлгэрэнгүй</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+  <!-- Мэдэгдэл -->
+  <div id="notify" class="card">
+  <h2>🔔 Мэдэгдэл</h2>
+
+  <div class="notification unread">
+    <div class="icon success">✔</div>
+    <div class="content">
+      <p class="title">Засвар дууссан</p>
+      <p class="text">Таны Internet засвар амжилттай дууслаа.</p>
+      <span class="time">2026-01-14 14:30</span>
+    </div>
+    <button onclick="markRead(this)">Уншсан</button>
+  </div>
+
+  <div class="notification unread">
+    <div class="icon info">ℹ</div>
+    <div class="content">
+      <p class="title">Хүсэлт хүлээн авлаа</p>
+      <p class="text">Таны захиалгыг ажилтан хүлээн авсан.</p>
+      <span class="time">2026-01-13 10:05</span>
+    </div>
+    <button onclick="markRead(this)">Уншсан</button>
+  </div>
+
+  <div class="notification">
+    <div class="icon warning">⚠</div>
+    <div class="content">
+      <p class="title">Хүсэлт цуцлагдсан</p>
+      <p class="text">Таны захиалга цуцлагдлаа.</p>
+      <span class="time">2026-01-10 09:00</span>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Сэтгэгдэл -->
+  <div id="feedback" class="card">
+  <h2>⭐ Хэрэглэгчийн сэтгэгдэл</h2>
+
+  <!-- Шүүлт -->
+  <div class="filter-bar">
+    <select>
+      <option>Бүх үнэлгээ</option>
+      <option>5 од</option>
+      <option>4 од</option>
+      <option>3 од</option>
+      <option>2 од</option>
+      <option>1 од</option>
+    </select>
+
+    <select>
+      <option>Шинэ → Хуучин</option>
+      <option>Хуучин → Шинэ</option>
+    </select>
+  </div>
+
+  <!-- Сэтгэгдэл -->
+  <div class="feedback-item">
+    <div class="user">
+      <span class="avatar">👤</span>
+      <div>
+        <b>Бат-Эрдэнэ</b>
+        <p class="date">2026-01-14</p>
+      </div>
+    </div>
+
+    <div class="rating">
+      ★★★★★
+    </div>
+
+    <p class="comment">
+      Маш хурдан, чанартай засвар хийсэнд баярлалаа!
+    </p>
+
+    <button onclick="reply(this)">Хариу бичих</button>
+  </div>
+
+  <div class="feedback-item">
+    <div class="user">
+      <span class="avatar">👤</span>
+      <div>
+        <b>Сараа</b>
+        <p class="date">2026-01-12</p>
+      </div>
+    </div>
+
+    <div class="rating">
+      ★★★★☆
+    </div>
+
+    <p class="comment">
+      Сайн байсан ч хугацаа арай удаан байлаа.
+    </p>
+
+    <button onclick="reply(this)">Хариу бичих</button>
+  </div>
+
+</div>
+
+
+  <!-- Профайл -->
+  <div id="profile" class="card" style="display:none">
+    <h2>👤 Миний профайл</h2>
+    <input placeholder="Нэр">
+    <input placeholder="Имэйл">
+    <input placeholder="Утас">
+    <button>Хадгалах</button>
+  </div>
+
+  <!-- Цаг захиалах -->
+  <div id="time" class="card" style="display:none">
+    <h2>⏰ Засварын цаг захиалах</h2>
+    <input type="date">
+    <input type="time">
+    <textarea placeholder="Шалтгаан"></textarea>
+    <button>Цаг захиалах</button>
+  </div>
+
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

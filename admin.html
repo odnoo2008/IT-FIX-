@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <title>Админ Dashboard</title>
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+    <script defer src="../js/chart.js"></script>
+
+  <style>
+    body {
+      background: #f4f6f9;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: linear-gradient(90deg,#1e3c72,#2a5298);
+      color: #e2e2e2;
+      padding: 15px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: rgb(253, 254, 255);
+      list-style:none;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #192638;
+      position: fixed;
+      top: 60px;
+      bottom: 0;
+      padding-top: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 14px 20px;
+      color: #ddd;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .main {
+      margin-left: 280px;
+      padding: 25px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgb(2, 67, 245);
+      margin-bottom: 20px;
+      animation: fade 0.3s ease;
+    }
+
+    @keyframes fade {
+      from {opacity:0; transform:translateY(10px);}
+      to {opacity:1;}
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th, table td {
+      padding: 10px;
+      border-bottom: 1px solid #dad5d5;
+      text-align: left;
+    }
+
+    table th {
+      background: #204264;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .approve { background: #22c55e; color: rgb(243, 239, 239); }
+    .reject { background: #ef4444; color: white; }
+
+    .badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.pending { background:#fde68a; color:#92400e; }
+.approved { background:#bbf7d0; color:#065f46; }
+.cancelled { background:#fecaca; color:#7f1d1d; }
+
+.action-btn {
+  padding: 6px 10px;
+  margin-right: 5px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.accept { background:#22c55e; color:rgb(233, 224, 224); }
+.cancel { background:#ef4444; color:rgb(218, 216, 216); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-grid label {
+  font-size: 13px;
+  color: #374151;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  margin-top: 4px;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.feedback-item {
+  border-left: 5px solid #2563eb;
+  padding: 12px 15px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #374151;
+}
+
+.stars {
+  color: #facc15;
+  font-size: 16px;
+}
+
+.reply-box {
+  margin-top: 10px;
+}
+
+.reply-box textarea {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 6px;
+}
+
+.reply-box button {
+  margin-top: 5px;
+  background: #2563eb;
+  color: #973939;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+  </style>
+</head>
+<script>
+document.getElementById("adminRequestForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const newRequest = {
+    id: Date.now(),
+    date: new Date().toISOString().slice(0,10),
+    user: document.getElementById("userType").value + " #" + userId.value,
+    type: repairType.value,
+    location: location.value,
+    status: "pending"
+  };
+
+  requests.push(newRequest);
+
+  alert("✅ Хүсэлт амжилттай бүртгэгдлээ");
+
+  e.target.reset();
+  show('requests');
+  renderRequests();
+});
+</script>
+
+
+<script>
+const feedbacks = [
+  {
+    id:1,
+    user:'Бат',
+    rating:5,
+    comment:'Маш хурдан, найрсаг үйлчилгээ авлаа',
+    month:1
+  },
+  {
+    id:2,
+    user:'Сараа',
+    rating:3,
+    comment:'Дундаж, арай удаан',
+    month:2
+  }
+];
+
+function renderFeedback(){
+  const list = document.getElementById('feedbackList');
+  list.innerHTML = '';
+
+  const rFilter = ratingFilter.value;
+  const mFilter = monthFilter.value;
+
+  feedbacks
+    .filter(f =>
+      (rFilter === 'all' || f.rating == rFilter) &&
+      (mFilter === 'all' || f.month == mFilter)
+    )
+    .forEach(f => {
+      list.innerHTML += `
+        <div class="feedback-item">
+          <div class="feedback-header">
+            <strong>${f.user}</strong>
+            <span class="stars">${'⭐'.repeat(f.rating)}</span>
+          </div>
+          <p>${f.comment}</p>
+
+          <div class="reply-box">
+            <textarea rows="2" placeholder="Админы хариу бичих..."></textarea>
+            <button onclick="reply()">Хариу илгээх</button>
+          </div>
+        </div>
+      `;
+    });
+
+  drawChart();
+}
+
+function reply(){
+  alert("✅ Хариу амжилттай илгээгдлээ");
+}
+
+ratingFilter.onchange = renderFeedback;
+monthFilter.onchange = renderFeedback;
+
+renderFeedback();
+</script>
+
+
+<script>
+const inventory = [
+  {id:1, name:'RAM 8GB', category:'Hardware', qty:12},
+  {id:2, name:'SSD 256GB', category:'Hardware', qty:3},
+  {id:3, name:'LAN Cable', category:'Internet', qty:0}
+];
+
+function renderInventory(){
+  const tb = document.getElementById('inventoryTable');
+  tb.innerHTML = '';
+
+  const q = searchPart.value.toLowerCase();
+
+  inventory
+    .filter(i => i.name.toLowerCase().includes(q))
+    .forEach(i => {
+      tb.innerHTML += `
+        <tr>
+          <td>${i.name}</td>
+          <td>${i.category}</td>
+          <td>${i.qty}</td>
+          <td class="${i.qty<=3 ? 'low':'ok'}">
+            ${i.qty<=0 ? '❌ Дууссан' : i.qty<=3 ? '⚠ Бага' : '✅ Хангалттай'}
+          </td>
+          <td>
+            <button class="approve" onclick="changeQty(${i.id},1)">+</button>
+            <button class="cancel" onclick="changeQty(${i.id},-1)">-</button>
+          </td>
+        </tr>
+      `;
+    });
+}
+
+function changeQty(id,val){
+  const item = inventory.find(i=>i.id===id);
+  item.qty += val;
+  if(item.qty < 0) item.qty = 0;
+  renderInventory();
+}
+
+function openAdd(){ addModal.style.display='block'; }
+function closeAdd(){ addModal.style.display='none'; }
+
+function addPart(){
+  inventory.push({
+    id:Date.now(),
+    name:partName.value,
+    category:partCategory.value,
+    qty:Number(partQty.value)
+  });
+  closeAdd();
+  renderInventory();
+}
+
+searchPart.onkeyup = renderInventory;
+renderInventory();
+</script>
+ 
+<script>
+const users = [
+  {id:1, name:'Бат', email:'bat@gmail.com', role:'individual', created:'new'},
+  {id:2, name:'Сараа', email:'saraa@company.mn', role:'organization', created:'old'},
+  {id:3, name:'Тэмүүжин', email:'staff@service.mn', role:'staff', created:'new'},
+  {id:4, name:'Админ', email:'admin@system.mn', role:'admin', created:'old'}
+];
+
+function renderUsers(){
+  const tb = document.getElementById('userTable');
+  tb.innerHTML = '';
+
+  const q = searchUser.value.toLowerCase();
+  const role = roleFilter.value;
+  const date = dateFilter.value;
+
+  users
+    .filter(u =>
+      u.name.toLowerCase().includes(q) &&
+      (role === 'all' || u.role === role) &&
+      (date === 'all' || u.created === date)
+    )
+    .sort((a,b)=>a.name.localeCompare(b.name))
+    .forEach(u => {
+      tb.innerHTML += `
+        <tr>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td><span class="role ${u.role}">${roleText(u.role)}</span></td>
+          <td>${u.created === 'new' ? '🆕 Шинэ' : 'Хуучин'}</td>
+          <td>
+            <button class="approve" onclick="contact('${u.email}')">Холбогдох</button>
+            ${u.role !== 'admin'
+              ? `<button class="cancel" onclick="removeUser(${u.id})">Устгах</button>`
+              : ''}
+          </td>
+        </tr>
+      `;
+    });
+}
+
+function roleText(r){
+  if(r==='individual') return 'Хувь хүн';
+  if(r==='organization') return 'Байгууллага';
+  if(r==='staff') return 'Ажилтан';
+  return 'Админ';
+}
+
+function contact(email){
+  alert("📧 Холбогдох имэйл:\n" + email);
+}
+
+function removeUser(id){
+  if(confirm("❗ Хэрэглэгчийг устгах уу?")){
+    const i = users.findIndex(u=>u.id===id);
+    users.splice(i,1);
+    renderUsers();
+  }
+}
+
+function openUserModal(){ userModal.style.display='block'; }
+function closeUserModal(){ userModal.style.display='none'; }
+
+function addUser(){
+  users.push({
+    id:Date.now(),
+    name:uName.value,
+    email:uEmail.value,
+    role:uRole.value,
+    created:'new'
+  });
+  closeUserModal();
+  renderUsers();
+}
+
+searchUser.onkeyup = renderUsers;
+roleFilter.onchange = renderUsers;
+dateFilter.onchange = renderUsers;
+
+renderUsers();
+</script>
+<script>
+const jobs = [
+  {
+    id:1,
+    date:'2026-01-10',
+    month:1,
+    user:'Бат',
+    location:'Баянзүрх',
+    staff:'Тэмүүжин',
+    status:'new'
+  },
+  {
+    id:2,
+    date:'2026-01-05',
+    month:1,
+    user:'Сараа',
+    location:'СХД',
+    staff:'Батболд',
+    status:'done'
+  }
+];
+
+function renderJobs(){
+  const tb = document.getElementById('jobTable');
+  tb.innerHTML = '';
+
+  const q = searchJob.value.toLowerCase();
+  const s = jobStatus.value;
+  const m = monthJob.value;
+
+  let filtered = jobs.filter(j =>
+    (j.user.toLowerCase().includes(q) || j.location.toLowerCase().includes(q)) &&
+    (s === 'all' || j.status === s) &&
+    (m === 'all' || j.month == m)
+  );
+
+  filtered.forEach(j => {
+    tb.innerHTML += `
+      <tr>
+        <td>${j.date}</td>
+        <td>${j.user}</td>
+        <td>${j.location}</td>
+        <td>${j.staff}</td>
+        <td><span class="job ${j.status}">${jobText(j.status)}</span></td>
+        <td>
+          ${j.status !== 'done'
+            ? `<button class="approve" onclick="nextStatus(${j.id})">Дараагийн төлөв</button>`
+            : '-'}
+        </td>
+      </tr>
+    `;
+  });
+
+  jobCount.innerText = filtered.length;
+}
+
+function jobText(s){
+  if(s==='new') return 'Шинэ';
+  if(s==='inprogress') return 'Хийгдэж буй';
+  return 'Дууссан';
+}
+
+function nextStatus(id){
+  const j = jobs.find(x=>x.id===id);
+  if(j.status==='new') j.status='inprogress';
+  else if(j.status==='inprogress') j.status='done';
+
+  alert('✅ Ажлын төлөв шинэчлэгдлээ');
+  renderJobs();
+}
+
+searchJob.onkeyup = renderJobs;
+jobStatus.onchange = renderJobs;
+monthJob.onchange = renderJobs;
+
+renderJobs();
+</script>
+ 
+
+<script>
+const schedules = [
+  {
+    id:1,
+    date:'2026-01-15',
+    time:'10:00',
+    user:'Бат',
+    type:'Hardware',
+    urgent:'yes',
+    staff:'—',
+    status:'pending'
+  },
+  {
+    id:2,
+    date:'2026-01-16',
+    time:'14:30',
+    user:'Сараа',
+    type:'Internet',
+    urgent:'no',
+    staff:'Тэмүүжин',
+    status:'approved'
+  }
+];
+
+function renderSchedules(){
+  const tb = scheduleTable;
+  tb.innerHTML = '';
+
+  const d = filterDate.value;
+  const s = filterStatus.value;
+  const u = filterUrgent.value;
+
+  let filtered = schedules.filter(x =>
+    (!d || x.date === d) &&
+    (s === 'all' || x.status === s) &&
+    (u === 'all' || x.urgent === u)
+  );
+
+  filtered.forEach(x=>{
+    tb.innerHTML += `
+      <tr>
+        <td>${x.date}</td>
+        <td>${x.time}</td>
+        <td>${x.user}</td>
+        <td>${x.type}</td>
+        <td class="${x.urgent==='yes'?'urgent':''}">
+          ${x.urgent==='yes'?'⚡ Яаралтай':'—'}
+        </td>
+        <td>${x.staff}</td>
+        <td><span class="status ${x.status}">${statusText(x.status)}</span></td>
+        <td>
+          ${x.status==='pending'
+            ? `<button class="approve" onclick="approve(${x.id})">Батлах</button>
+               <button class="reject" onclick="cancel(${x.id})">Цуцлах</button>`
+            : '-'}
+        </td>
+      </tr>
+    `;
+  });
+
+  scheduleCount.innerText = filtered.length;
+}
+
+function statusText(s){
+  if(s==='pending') return 'Хүлээгдэж буй';
+  if(s==='approved') return 'Баталгаажсан';
+  return 'Цуцлагдсан';
+}
+
+function approve(id){
+  const x = schedules.find(s=>s.id===id);
+  x.status='approved';
+  x.staff='Автомат оноосон';
+  alert('✅ Захиалга баталгаажлаа');
+  renderSchedules();
+}
+
+function cancel(id){
+  if(confirm('Цуцлах уу?')){
+    const x = schedules.find(s=>s.id===id);
+    x.status='cancelled';
+    renderSchedules();
+  }
+}
+
+filterDate.onchange = renderSchedules;
+filterStatus.onchange = renderSchedules;
+filterUrgent.onchange = renderSchedules;
+
+renderSchedules();
+</script>
+
+
+
+<body>
+
+<header>
+  <div class="container navbar">
+    <a href="/pages/index.html"><div class="logo">💻 Компьютер Засвар – Админ</div></a>
+    
+    <div>Админ хэрэглэгч</div>
+  </div>
+</header>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <a onclick="show('requests')">📥 Хэрэглэгчийн хүсэлтүүд</a>
+  <a onclick="show('register')">📝 Хүсэлт бүртгэх</a>
+  <a onclick="show('feedback')">⭐ Сэтгэгдэл</a>
+  <a onclick="show('inventory')">🧰 Сэлбэгийн агуулах</a>
+  <a onclick="show('users')">👥 Хэрэглэгчийн удирдлага</a>
+  <a onclick="show('jobs')">📍 Ажлын мэдээлэл</a>
+  <a onclick="show('analytics')">📊 Тайлан & Анализ</a>
+  <a onclick="show('schedule')">🕒 Цагийн захиалга</a>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Хүсэлтүүд -->
+  <!-- <div id="requests" class="card">
+    <h2>📥 Хэрэглэгчийн хүсэлтүүд</h2>
+    <table>
+      <tr>
+        <th>Огноо</th>
+        <th>Төрөл</th>
+        <th>Байршил</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+      <tr>
+        <td>2026-01-10</td>
+        <td>Hardware</td>
+        <td>Баянзүрх</td>
+        <td>Хүлээгдэж буй</td>
+        <td>
+          <button class="approve">Зөвшөөрөх</button>
+          <button class="reject">Цуцлах</button>
+        </td>
+      </tr>
+    </table>
+  </div> -->
+<div id="requests" class="card">
+  <h2>📥 Хэрэглэгчийн хүсэлтүүд</h2>
+
+  <!-- Filter -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <select id="filterStatus">
+      <option value="all">Бүгд</option>
+      <option value="pending">Хүлээгдэж буй</option>
+      <option value="approved">Зөвшөөрсөн</option>
+      <option value="cancelled">Цуцалсан</option>
+    </select>
+
+    <select id="filterType">
+      <option value="all">Бүх төрөл</option>
+      <option value="hardware">Hardware</option>
+      <option value="software">Software</option>
+      <option value="internet">Internet</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table id="requestTable">
+    <thead>
+      <tr>
+        <th>Огноо</th>
+        <th>Хэрэглэгч</th>
+        <th>Төрөл</th>
+        <th>Байршил</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+  <!-- Хүсэлт бүртгэх -->
+  <!-- <div id="register" class="card" style="display:none">
+    <h2>📝 Хэрэглэгчийн хүсэлт бүртгэх</h2>
+    <input placeholder="Хэрэглэгчийн ID"><br><br>
+    <select>
+      <option>Хувь хүн</option>
+      <option>Байгууллага</option>
+    </select><br><br>
+    <select>
+      <option>Hardware</option>
+      <option>Software</option>
+      <option>Internet</option>
+    </select><br><br>
+    <input placeholder="Гүйцэтгэх ажлын нэр"><br><br>
+    <textarea placeholder="Дэлгэрэнгүй тайлбар"></textarea><br><br>
+    <button class="approve">Хадгалах</button>
+  </div> -->
+<div id="register" class="card" style="display:none">
+  <h2>📝 Хэрэглэгчийн хүсэлт бүртгэх</h2>
+
+  <form id="adminRequestForm" class="form-grid">
+
+    <div>
+      <label>Хэрэглэгчийн төрөл</label>
+      <select id="userType" required>
+        <option value="">Сонгох</option>
+        <option value="individual">Хувь хүн</option>
+        <option value="organization">Байгууллага</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Хэрэглэгчийн ID</label>
+      <input type="number" id="userId" placeholder="Ж: 1024" required>
+    </div>
+
+    <div>
+      <label>Засварын төрөл</label>
+      <select id="repairType" required>
+        <option value="">Сонгох</option>
+        <option value="hardware">Hardware</option>
+        <option value="software">Software</option>
+        <option value="internet">Internet</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Төхөөрөмжийн төлөв</label>
+      <select id="deviceStatus">
+        <option value="new">Шинэ</option>
+        <option value="old">Хуучин</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Байршил</label>
+      <input type="text" id="location" placeholder="Дүүрэг, хороо" required>
+    </div>
+
+    <div>
+      <label>Гүйцэтгэх ажлын нэр</label>
+      <input type="text" id="title" required>
+    </div>
+
+    <div style="grid-column:1/3">
+      <label>Ажлын дэлгэрэнгүй тайлбар</label>
+      <textarea id="description" rows="3"></textarea>
+    </div>
+
+    <div>
+      <label>Эхлэх огноо</label>
+      <input type="date" id="startDate" required>
+    </div>
+
+    <div>
+      <label>Дуусах огноо</label>
+      <input type="date" id="endDate" required>
+    </div>
+
+    <div style="grid-column:1/3; text-align:right">
+      <button type="submit" class="approve">📌 Хүсэлт бүртгэх</button>
+    </div>
+
+  </form>
+</div>
+
+  <!-- Сэтгэгдэл -->
+  <!-- <div id="feedback" class="card" style="display:none">
+    <h2>⭐ Хэрэглэгчийн сэтгэгдлүүд</h2>
+    <p>⭐⭐⭐⭐☆ Маш сайн үйлчилгээ</p>
+    <canvas id="ratingChart"></canvas>
+  </div> -->
+<div id="feedback" class="card" style="display:none">
+  <h2>⭐ Хэрэглэгчийн сэтгэгдлүүд</h2>
+
+  <!-- Filter -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <select id="ratingFilter">
+      <option value="all">Бүх үнэлгээ</option>
+      <option value="5">⭐⭐⭐⭐⭐</option>
+      <option value="4">⭐⭐⭐⭐</option>
+      <option value="3">⭐⭐⭐</option>
+      <option value="2">⭐⭐</option>
+      <option value="1">⭐</option>
+    </select>
+
+    <select id="monthFilter">
+      <option value="all">Бүх сар</option>
+      <option value="1">1-р сар</option>
+      <option value="2">2-р сар</option>
+    </select>
+  </div>
+
+  <!-- Feedback List -->
+  <div id="feedbackList"></div>
+
+  <hr style="margin:20px 0">
+
+  <h3>📊 Сэтгэл ханамжийн статистик</h3>
+  <canvas id="ratingChart" height="120"></canvas>
+</div>
+
+  <!-- Агуулах -->
+  <!-- <div id="inventory" class="card" style="display:none">
+    <h2>🧰 Сэлбэгийн агуулах</h2>
+    <table>
+      <tr>
+        <th>Нэр</th>
+        <th>Тоо</th>
+        <th>Үйлдэл</th>
+      </tr>
+      <tr>
+        <td>RAM 8GB</td>
+        <td>12</td>
+        <td>
+          <button class="approve">+</button>
+          <button class="reject">-</button>
+        </td>
+      </tr>
+    </table>
+  </div> -->
+<div id="inventory" class="card" style="display:none">
+  <h2>🧰 Сэлбэгийн агуулах</h2>
+
+  <!-- Controls -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="text" id="searchPart" placeholder="🔍 Сэлбэг хайх...">
+    <button class="approve" onclick="openAdd()">➕ Шинэ сэлбэг</button>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Нэр</th>
+        <th>Ангилал</th>
+        <th>Тоо ширхэг</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryTable"></tbody>
+  </table>
+</div>
+
+<!-- Add Modal -->
+<div id="addModal" class="modal">
+  <div class="modal-box">
+    <h3>➕ Сэлбэг нэмэх</h3>
+    <input id="partName" placeholder="Сэлбэгийн нэр">
+    <input id="partCategory" placeholder="Ангилал">
+    <input id="partQty" type="number" placeholder="Тоо ширхэг">
+    <button class="approve" onclick="addPart()">Хадгалах</button>
+    <button class="cancel" onclick="closeAdd()">Болих</button>
+  </div>
+</div>
+
+  <!-- Хэрэглэгч -->
+  <!-- <div id="users" class="card" style="display:none">
+    <h2>👥 Хэрэглэгчийн удирдлага</h2>
+    <p>Шинэ / Хуучин / Он сараар шүүх боломжтой</p>
+  </div> -->
+<div id="users" class="card" style="display:none">
+  <h2>👥 Хэрэглэгчийн удирдлага</h2>
+
+  <!-- Filter & Actions -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="text" id="searchUser" placeholder="🔍 Нэрээр хайх">
+    
+    <select id="roleFilter">
+      <option value="all">Бүх эрх</option>
+      <option value="individual">Хувь хүн</option>
+      <option value="organization">Байгууллага</option>
+      <option value="staff">Ажилтан</option>
+      <option value="admin">Админ</option>
+    </select>
+
+    <select id="dateFilter">
+      <option value="all">Бүх</option>
+      <option value="new">Шинэ</option>
+      <option value="old">Хуучин</option>
+    </select>
+
+    <button class="approve" onclick="openUserModal()">➕ Хэрэглэгч нэмэх</button>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Нэр</th>
+        <th>Имэйл</th>
+        <th>Эрх</th>
+        <th>Бүртгүүлсэн</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
+
+<!-- Add User Modal -->
+<div id="userModal" class="modal">
+  <div class="modal-box">
+    <h3>➕ Хэрэглэгч нэмэх</h3>
+    <input id="uName" placeholder="Нэр">
+    <input id="uEmail" placeholder="Имэйл">
+    <select id="uRole">
+      <option value="individual">Хувь хүн</option>
+      <option value="organization">Байгууллага</option>
+      <option value="staff">Ажилтан</option>
+      <option value="admin">Админ</option>
+    </select>
+    <button class="approve" onclick="addUser()">Хадгалах</button>
+    <button class="cancel" onclick="closeUserModal()">Болих</button>
+  </div>
+</div>
+
+  <!-- Ажил -->
+  <!-- <div id="jobs" class="card" style="display:none">
+    <h2>📍 Ажлын мэдээлэл</h2>
+    <p>Байршил, цаг, хэрэглэгчээр харах</p>
+  </div> -->
+<div id="jobs" class="card" style="display:none">
+  <h2>🛠 Ажлын мэдээлэл</h2>
+
+  <!-- Filters -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="text" id="searchJob" placeholder="🔍 Хэрэглэгч / байршил">
+    
+    <select id="jobStatus">
+      <option value="all">Бүх төлөв</option>
+      <option value="new">Шинэ</option>
+      <option value="inprogress">Хийгдэж буй</option>
+      <option value="done">Дууссан</option>
+    </select>
+
+    <select id="monthJob">
+      <option value="all">Бүх сар</option>
+      <option value="1">1-р сар</option>
+      <option value="2">2-р сар</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Огноо</th>
+        <th>Хэрэглэгч</th>
+        <th>Байршил</th>
+        <th>Ажилтан</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="jobTable"></tbody>
+  </table>
+
+  <!-- Total -->
+  <div style="text-align:right; margin-top:10px;">
+    <strong>Нийт ажил: <span id="jobCount">0</span></strong>
+  </div>
+</div>
+
+  <!-- Тайлан -->
+  <!-- <div id="analytics" class="card" style="display:none">
+    <h2>📊 Тайлан & Анализ</h2>
+    <canvas id="chart"></canvas>
+  </div>  -->
+<div id="analytics" class="card" style="display:none">
+  <h2>📊 Тайлан & Анализ</h2>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h3>Нийт хүсэлт</h3>
+      <p id="totalRequests">0</p>
+    </div>
+    <div class="summary-card">
+      <h3>Дууссан ажил</h3>
+      <p id="doneJobs">0</p>
+    </div>
+    <div class="summary-card">
+      <h3>Дундаж үнэлгээ</h3>
+      <p id="avgRating">0 ⭐</p>
+    </div>
+    <div class="summary-card">
+      <h3>Идэвхтэй сар</h3>
+      <p>1-р сар</p>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h4>📈 Сар бүрийн ажлын тоо</h4>
+      <canvas id="monthlyJobChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h4>⭐ Сэтгэл ханамжийн үнэлгээ</h4>
+      <canvas id="ratingPie"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h4>🛠 Засварын төрлүүд</h4>
+      <canvas id="repairTypeChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h4>📍 Байршлаар хүсэлт</h4>
+      <canvas id="locationChart"></canvas>
+    </div>
+  </div>
+</div>
+
+
+
+
+  <!-- <div id="schedule" class="card" style="display:none">
+    <h2>🕒 Цагийн захиалга</h2>
+  </div> -->
+<div id="schedule" class="card" style="display:none">
+  <h2>⏰ Цагийн захиалга</h2>
+
+  <!-- Filters -->
+  <div style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="date" id="filterDate">
+    
+    <select id="filterStatus">
+      <option value="all">Бүх төлөв</option>
+      <option value="pending">Хүлээгдэж буй</option>
+      <option value="approved">Баталгаажсан</option>
+      <option value="cancelled">Цуцлагдсан</option>
+    </select>
+
+    <select id="filterUrgent">
+      <option value="all">Яаралтай эсэх</option>
+      <option value="yes">⚡ Яаралтай</option>
+      <option value="no">Энгийн</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Огноо</th>
+        <th>Цаг</th>
+        <th>Хэрэглэгч</th>
+        <th>Төрөл</th>
+        <th>Яаралтай</th>
+        <th>Ажилтан</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="scheduleTable"></tbody>
+  </table>
+
+  <div style="text-align:right;margin-top:10px">
+    <strong>Нийт захиалга: <span id="scheduleCount">0</span></strong>
+  </div>
+</div>
+
+</div>
+
+<script src="../js/chart.js"></script>
+<script>
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+</script>
+
+</body>
+</html>

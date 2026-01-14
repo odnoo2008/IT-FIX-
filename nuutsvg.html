@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нууц үг сэргээх</title>
+  <link rel="stylesheet" href="../css/nuutsvg.css">
+  <script defer src="../js/nuutsvg.js"></script>
+</head>
+<body>
+
+<div class="modal" id="forgotModal" style="display:block">
+  <div class="modal-box">
+
+    <h3>🔑 Нууц үг сэргээх</h3>
+
+    <!-- 1-р алхам -->
+    <div id="emailStep">
+      <input id="forgotEmail" placeholder="Бүртгэлтэй имэйл">
+      <p id="forgotError" class="error"></p>
+      <button type="button" onclick="resetPassword()">Код илгээх</button>
+    </div>
+
+    <!-- 2-р алхам -->
+    <div id="codeStep" style="display:none;">
+      <input id="verifyCode" placeholder="6 оронтой код">
+      <p id="timer"></p>
+      <p id="codeError" class="error"></p>
+
+      <button type="button" onclick="verifyCode()">Баталгаажуулах</button>
+      <p onclick="resendCode()" style="cursor:pointer;color:#2563eb">
+        🔄 Код дахин авах
+      </p>
+    </div>
+
+    <!-- 3-р алхам -->
+    <div id="passwordStep" style="display:none;">
+      <input type="password" id="newPass" placeholder="Шинэ нууц үг">
+      <input type="password" id="confirmPass" placeholder="Дахин оруулах">
+      <p id="passError" class="error"></p>
+
+      <button type="button" onclick="savePassword()">Хадгалах</button>
+    </div>
+
+    <p onclick="closeModal('forgotModal')" style="cursor:pointer">
+     <a href="/pages/index.html"><button>❌ Хаах</button></a> 
+    </p>
+
+  </div>
+</div>
+
+</body>
+</html>

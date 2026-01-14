@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <title>Компьютер засварын систем</title>
+
+  <!-- ТАНЫ CSS ХЭВЭЭР -->
+  <link rel="stylesheet" href="../css/index.css">
+
+  <style>
+    /* ШИНЭ DROPDOWN-д ЗӨВХӨН нэмэлт */
+    .dropdown {
+      position: relative;
+      text-align: center;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-radius: 5px;
+      z-index: 10;
+    }
+    .dropdown-content button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: white;
+      cursor: pointer;
+    }
+    .dropdown-content button:hover {
+      background: #f0f0f0;
+    }
+  </style>
+  <script>
+  let selectedRole = null;
+
+  // dropdown нээх / хаах
+  function toggleDropdown() {
+    const dd = document.getElementById("roleDropdown");
+    dd.style.display = dd.style.display === "block" ? "none" : "block";
+  }
+
+  // эрх сонгох
+  function selectRole(role) {
+    selectedRole = role;
+    document.getElementById("selectedRoleText").innerText =
+      "Сонгосон эрх: " + role;
+    document.getElementById("roleDropdown").style.display = "none";
+  }
+
+  // email шалгах
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // НЭВТРЭХ
+  function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("loginError");
+
+    if (!selectedRole) {
+      error.textContent = "⚠ Нэвтрэх эрх сонгоно уу";
+      return;
+    }
+
+    if (!email || !password) {
+      error.textContent = "⚠ Имэйл болон нууц үгээ оруулна уу";
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      error.textContent = "❌ Gmail формат буруу байна";
+      return;
+    }
+
+    /* ====== DEMO LOGIN (түр) ====== */
+    // backend байхгүй үед шууд шилжүүлнэ
+
+    if (selectedRole === "Хувь хүн") {
+      window.location.href = "/pages/huwihvn.html";
+    }
+    else if (selectedRole === "Байгууллага") {
+      window.location.href = "/pages/baiguullaga.html";
+    }
+    else if (selectedRole === "Ажилтан") {
+      window.location.href = "/pages/ajiltan.html";
+    }
+    else if (selectedRole === "Админ") {
+      window.location.href = "/pages/admin.html";
+    }
+  }
+</script>
+
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">🖥️ IT FIX</div>
+  <nav>
+    <a href="/pages/tuslamj.html">Тусламж</a>
+    <a href="/pages/tvgeemelasuult.html">Түгээмэл асуулт</a>
+    <a href="/pages/zaawarzowlogoo.html">Заавар зөвлөгөө</a>
+  </nav>
+</header>
+
+<main class="login-container">
+  <h2>Системд нэвтрэх</h2>
+
+  <!-- 🔽 ХЭРЭГЛЭГЧ СОНГОХ -->
+<div class="dropdown">
+  <button type="button" class="login-btn" onclick="toggleDropdown()">
+    👤 Нэвтрэх эрх сонгох
+  </button>
+
+  <div id="roleDropdown" class="dropdown-content">
+    <button onclick="selectRole('Хувь хүн')">👤 Хувь хүн</button>
+    <button onclick="selectRole('Байгууллага')">🏢 Байгууллага</button>
+    <button onclick="selectRole('Ажилтан')">🛠️ Ажилтан</button>
+    <button onclick="selectRole('Админ')">👑 Админ</button>
+  </div>
+</div>
+
+<p id="selectedRoleText">Нэвтрэх эрх сонгоно уу</p>
+
+<input type="text" id="email" placeholder="Имэйл">
+<input type="password" id="password" placeholder="Нууц үг">
+
+<button class="login-btn" onclick="login()">Нэвтрэх</button>
+
+<p id="loginError" class="error"></p>
+
+
+  <div class="links">
+    <a href="/pages/shineernewtreh.html">Шинээр бүртгүүлэх</a> |
+    <a href="#">Нууц үг мартсан</a>
+  </div>
+</main>
+
+<footer>
+  <p>📞 9999-9999 | ✉ info@itfix.mn</p>
+  <p>© 2026</p>
+</footer>
+
+</body>
+</html>

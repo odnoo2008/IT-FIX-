@@ -1,0 +1,23 @@
+function register() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const role = document.getElementById("role").value;
+
+    if (!email || !password || !role) {
+        alert("⚠ Бүх талбарыг бөглөнө үү");
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (users.some(u => u.email === email)) {
+        alert("❌ Энэ имэйл аль хэдийн бүртгэлтэй байна");
+        return;
+    }
+
+    users.push({ email, password, role });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("✅ Бүртгэл амжилттай");
+    window.location.href = "index.html";
+}

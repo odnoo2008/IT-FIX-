@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <title>IT FIX – Нэвтрэх</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/shineernewtreh.css">
+  <script defer src="/js/shineernewter.js"></script>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login-container">
+  <h2>Системд нэвтрэх</h2>
+
+  <input id="email" type="email" placeholder="Имэйл">
+  <input id="password" type="password" placeholder="Нууц үг">
+
+  <p id="loginError" class="error"></p>
+
+  <a href="/pages/index.html"><button onclick="login()">Нэвтрэх</button></a>
+  <a href="">нүүр хэсгээс дахин нэвтэрж орно уу</a>
+  <!-- Буцах товч -->
+   <div class="back-btn">
+<a href="/pages/index.html"><button onclick="history.back()"> Буцах</button></a>
+</div>
+
+  <div class="links">
+    <a onclick="openModal('forgotModal')">Нууц үг мартсан</a>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal" id="registerModal">
+  <div class="modal-box">
+    <h3>📝 Шинээр бүртгүүлэх</h3>
+
+    <input id="regName" placeholder="Нэр">
+    <input id="regEmail" placeholder="Имэйл">
+    <input id="regPhone" placeholder="Утас">
+    <input id="regPass" type="password" placeholder="Нууц үг">
+    <input id="regPass2" type="password" placeholder="Нууц үг давтах">
+
+    <p id="regError" class="error"></p>
+
+    <button type="button" onclick="register()">Бүртгүүлэх</button>
+    <p onclick="closeModal('registerModal')">❌ Хаах</p>
+  </div>
+</div>
+
+<!-- FORGOT MODAL -->
+<div class="modal" id="forgotModal">
+  <div class="modal-box">
+    <h3>🔑 Нууц үг сэргээх</h3>
+
+    <input id="forgotEmail" placeholder="Бүртгэлтэй имэйл">
+    <p id="forgotError" class="error"></p>
+
+    <button type="button" onclick="resetPassword()">Илгээх</button>
+    <p onclick="closeModal('forgotModal')">❌ Хаах</p>
+  </div>
+</div>
+<script>
+function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  users.push({
+    email: email,
+    password: password,
+    role: role
+  });
+
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Амжилттай бүртгэгдлээ");
+  window.location.href = "index.html";
+}
+</script>
+<!-- JS -->
+<script src="../js/auth.js"></script>
+
+</body>
+</html>
+

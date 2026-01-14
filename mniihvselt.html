@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <link rel="stylesheet" href="../css/mniihvselt.css">
+    <script defer src="../js/mniihvselt.js"></script>
+</head>
+<body>
+  
+<section class="my-requests">
+  <h2>📋 Миний хүсэлтүүд</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Төрөл</th>
+        <th>Ажлын нэр</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="requestList">
+      <tr>
+        <td>1</td>
+        <td>Internet</td>
+        <td>WiFi засах</td>
+        <td class="status active">Идэвхтэй</td>
+        <td>
+          <button class="pause" onclick="pauseRequest(this)">⏸ Түр зогсоох</button>
+          <button class="cancel" onclick="cancelRequest(this)">❌ Цуцлах</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>2</td>
+        <td>Hardware</td>
+        <td>Дэлгэц солих</td>
+        <td class="status paused">Түр зогссон</td>
+        <td>
+          <button class="resume" onclick="resumeRequest(this)">▶ Үргэлжлүүлэх</button>
+          <button class="cancel" onclick="cancelRequest(this)">❌ Цуцлах</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+</body>
+</html>

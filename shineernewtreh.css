@@ -1,0 +1,141 @@
+/* .modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 14px;
+  width: 320px;
+  text-align: center;
+  color: #fff;
+}
+
+.modal-box input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.modal-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.modal-box p {
+  margin-top: 10px;
+  cursor: pointer;
+  color: #f87171;
+} */
+
+
+/* body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.header, footer {
+  padding: 15px;
+  text-align: center;
+  background: #020617;
+}
+
+.login-container {
+  width: 380px;
+  margin: 80px auto;
+  padding: 25px;
+  background: #1e293b;
+  border-radius: 12px;
+} */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
+}
+
+.login-container {
+  width: 360px;
+  margin: 100px auto;
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.links a {
+  cursor: pointer;
+  color: #38bdf8;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 14px;
+  width: 320px;
+}
+
+.error {
+  color: #f87171;
+  font-size: 14px;
+}
+/* Буцах товчны загвар */
+.back-btn {
+  display: block;        /* Доор нь өөр товч байрлуулах боломжтой */
+  width: 100%;           /* Товчийг өргөнөөр нь */
+  margin: 15px 0 0 0;    /* Дээрээс 15px зай, доор 0 */
+  padding: 10px;         /* Дотор зай */
+  font-size: 16px;       /* Текст томруулж уншихад амар */
+  background-color: #f0f0f0; /* Буцах товчны өнгө */
+  border: 1px solid #ccc;    /* Хэв маяг */
+  border-radius: 5px;    /* Булан дугуйруулна */
+  cursor: pointer;       /* Муузыг товч дээр тавихад гар дүрс */
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0; /* Hover дээр өнгө өөрчлөгдөнө */
+}

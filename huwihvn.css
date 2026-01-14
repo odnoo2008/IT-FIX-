@@ -1,0 +1,144 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.header {
+  background: linear-gradient(90deg,#1e3a8a,#2563eb);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar {
+  width: 230px;
+  background: #111827;
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  padding: 15px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #93c5fd;
+}
+
+.sidebar a:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+.main {
+  margin-left: 250px;
+  padding: 20px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #2563eb;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.status.pending {
+  background: #fde68a;
+  color: #92400e;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.cancel {
+  background: #ef4444;
+  color: white;
+}
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filter-bar select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.feedback-item {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.rating {
+  color: #facc15;
+  font-size: 16px;
+  margin: 6px 0;
+}
+
+.comment {
+  color: #cbd5f5;
+  margin-bottom: 10px;
+}
+
+.feedback-item button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.feedback-item button:hover {
+  background: #1d4ed8;
+}

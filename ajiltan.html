@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+   <div class="container navbar">
+    <a href="/pages/index.html"><div class="logo">💻 Компьютер Засвар – ажилтан </div></a>
+  
+  </div>
+<meta charset="UTF-8">
+<title>Ажилтны Dashboard</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;}
+button{border:none;padding:8px 12px;border-radius:6px;cursor:pointer;}
+.accept{background:#2563eb;color:#fff;}
+.reply{background:#22c55e;color:#fff;}
+.cancel{background:#ef4444;color:#fff;}
+.pause{background:#f59e0b;color:#fff;}
+.sidebar{width:250px;height:100vh;position:fixed;background:#192638;padding-top:20px;}
+.sidebar a{display:block;padding:14px 20px;color:#ddd;cursor:pointer;}
+.sidebar a:hover{background:#2563eb;color:#fff;}
+.main{margin-left:270px;padding:20px;}
+.card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:20px;}
+.org-card{display:none;}
+.section-title{font-size:18px;color:#1e3a8a;margin-bottom:15px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+input,select,textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #c7d2fe;font-size:14px;transition:.3s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2);}
+.order-table{width:100%;border-collapse:collapse;margin-top:10px;}
+.order-table th, .order-table td{padding:10px;border-bottom:1px solid #e5e7eb;}
+.order-table th{background:#e0e7ff;color:#1e3a8a;}
+.order-table tr:hover{background:#f8fafc;}
+.status{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:bold;}
+.new{background:#fde68a;color:#92400e;}
+.inprogress{background:#bfdbfe;color:#1e40af;}
+.done{background:#bbf7d0;color:#065f46;}
+.cancelled{background:#fecaca;color:#7f1d1d;}
+.action-btn{padding:6px 10px;font-size:12px;border-radius:8px;border:none;cursor:pointer;}
+.chart-container{width:100%;max-width:600px;margin-top:20px;}
+#inventoryTable th{background:#f0f0f0;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <a onclick="show('employeeRequests')">📋 Хүсэлтүүд</a>
+  <a onclick="show('employeeFeedbacks')">💬 Сэтгэгдэл</a>
+  <a onclick="show('inventory')">🏬 Агуулах</a>
+  <a onclick="show('registerRequest')">📝 Хүсэлт бүртгэх</a>
+  <a onclick="show('userManagement')">👥 Хэрэглэгч удирдах</a>
+  <a onclick="show('employeeTasks')">🛠 Ажлын мэдээлэл</a>
+  <a onclick="show('scheduleEmp')">⏰ Цаг захиалга</a>
+</div>
+
+<div class="main">
+
+<!-- Хэрэглэгчийн хүсэлтүүд -->
+<div id="employeeRequests" class="card org-card" style="display:block;">
+  <h3 class="section-title">📋 Хэрэглэгчийн хүсэлтүүд</h3>
+  <table class="order-table">
+    <thead>
+      <tr><th>#</th><th>Хэрэглэгч</th><th>Ажлын нэр</th><th>Төрөл</th><th>Төлөв</th><th>Үйлдэл</th></tr>
+    </thead>
+    <tbody id="reqBody">
+      <tr>
+        <td>1</td><td>Байгууллага А</td><td>Компьютер засвар</td>
+        <td>Hardware</td><td><span class="status new">Шинэ</span></td>
+        <td>
+          <button class="action-btn accept">Ажлын бүртгэлд нэмэх</button>
+          <button class="action-btn reply">Хариу өгөх</button>
+          <button class="action-btn cancel">Цуцлах</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Сэтгэгдэл -->
+<div id="employeeFeedbacks" class="card org-card">
+  <h3 class="section-title">💬 Өөрийн хийсэн ажлын сэтгэгдлүүд</h3>
+  <textarea id="feedbackInput" rows="3" placeholder="Хариу бичих..."></textarea><br><br>
+  <button class="accept" onclick="addFeedback()">Илгээх</button>
+  <div id="feedbackList"></div>
+  <canvas id="growthChart" class="chart-container"></canvas>
+</div>
+
+<!-- Агуулах -->
+<div id="inventory" class="card org-card">
+  <h3 class="section-title">🏬 Сэлбэгийн агуулах</h3>
+  <table class="order-table" id="inventoryTable">
+    <thead><tr><th>Бараа</th><th>Тоо</th><th>Статус</th></tr></thead>
+    <tbody>
+      <tr><td>RAM</td><td>20</td><td>Байгаа</td></tr>
+      <tr><td>Хард диск</td><td>0</td><td>Дууссан</td></tr>
+    </tbody>
+  </table>
+  <button class="action-btn accept" onclick="notifyAdmin()">Дууссан барааг админ руу илгээх</button>
+</div>
+
+<!-- Хүсэлт бүртгэх -->
+<div id="registerRequest" class="card org-card">
+  <h3 class="section-title">📝 Хэрэглэгчийн хүсэлт бүртгэх</h3>
+  <div class="form-grid">
+    <div class="field"><label>Хувь хүн / Байгууллага</label><select><option>Хувь хүн</option><option>Байгууллага</option></select></div>
+    <div class="field"><label>Байршил</label><select><option>Байгууллага дээр очих</option><option>Салбар дээр авчрах</option><option>Шуудангаар илгээх</option></select></div>
+    <div class="field"><label>Шинэ / Хуучин</label><select><option>Шинэ</option><option>Хуучин</option></select></div>
+    <div class="field"><label>Яаралтай эсэх</label><select><option>Энгийн</option><option>⚠ Яаралтай</option></select></div>
+    <div class="field"><label>Ажлын нэр</label><input placeholder="Ажлын нэр"></div>
+    <div class="field full"><label>Дэлгэрэнгүй тайлбар</label><textarea rows="3"></textarea></div>
+    <div class="field"><label>Эхлэх огноо</label><input type="date"></div>
+    <div class="field"><label>Дуусах огноо</label><input type="date"></div>
+    <div class="field"><label>Хэрэглэгчийн ID</label><input placeholder="ID"></div>
+    <div class="field"><label>Засварын төрөл</label><select><option>Hardware</option><option>Software</option><option>Internet</option></select></div>
+  </div>
+  <br><button class="accept" onclick="registerRequest()">Хүсэлт илгээх</button>
+</div>
+
+<!-- Хэрэглэгч удирдах -->
+<div id="userManagement" class="card org-card">
+  <h3 class="section-title">👥 Хэрэглэгч удирдах</h3>
+  <table class="order-table">
+    <thead><tr><th>Хэрэглэгч</th><th>Төрөл</th><th>Огноо</th></tr></thead>
+    <tbody>
+      <tr><td>Байгууллага А</td><td>Шинэ</td><td>2026-01-12</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Ажлын мэдээлэл -->
+<div id="employeeTasks" class="card org-card">
+  <h3 class="section-title">🛠 Ажлын мэдээлэл</h3>
+  <table class="order-table">
+    <thead><tr><th>#</th><th>Ажлын нэр</th><th>Хэрэглэгч</th><th>Байршил</th><th>Төлөв</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Компьютер засвар</td><td>Байгууллага А</td><td>Салбар 1</td><td><span class="status inprogress">Гүйцэтгэж буй</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Цаг захиалга -->
+<div id="scheduleEmp" class="card org-card">
+  <h3 class="section-title">⏰ Цаг захиалга</h3>
+  <textarea id="scheduleReason" rows="3" placeholder="Шалтгаан бичнэ үү..."></textarea><br><br>
+  <div class="form-grid">
+    <div class="field"><label>Огноо</label><input type="date" id="scheduleDate"></div>
+    <div class="field"><label>Цаг</label><input type="time" id="scheduleTime"></div>
+  </div>
+  <br><button class="accept" onclick="bookSchedule()">Цаг захиалах</button>
+</div>
+
+</div>
+
+<script>
+// Sidebar
+function show(id){document.querySelectorAll('.org-card').forEach(x=>x.style.display='none');document.getElementById(id).style.display='block';}
+
+// Хүсэлт товчлуурууд
+document.querySelectorAll(".accept").forEach(btn=>{btn.onclick=()=>alert("✅ Амжилттай нэмэгдлээ");});
+document.querySelectorAll(".reply").forEach(btn=>{btn.onclick=()=>alert("💬 Хариу илгээгдлээ");});
+document.querySelectorAll(".cancel").forEach(btn=>{btn.onclick=()=>alert("❌ Цуцлагдлаа");});
+
+// Feedback
+function addFeedback(){
+  const f=document.getElementById("feedbackInput"); if(!f.value.trim()){alert("❌ Сэтгэгдэл хоосон!");return;}
+  const div=document.createElement("div"); div.className="feedback-item"; div.innerHTML=`<b>Ажилтан:</b><p>${f.value}</p>`;
+  document.getElementById("feedbackList").appendChild(div); f.value="";
+}
+
+// Inventory notify
+function notifyAdmin(){alert("📤 Дууссан барааг админ руу илгээв");}
+
+// Register request
+function registerRequest(){alert("✅ Хүсэлт амжилттай бүртгэгдлээ");}
+
+// Schedule
+function bookSchedule(){
+  const r=document.getElementById("scheduleReason").value;
+  const d=document.getElementById("scheduleDate").value;
+  const t=document.getElementById("scheduleTime").value;
+  if(!r||!d||!t){alert("❌ Бүх талбарыг бөглөнө үү");return;}
+  alert(`✅ Цаг захиалга амжилттай илгээгдлээ\nОгноо: ${d}\nЦаг: ${t}\nШалтгаан: ${r}`);
+  document.getElementById("scheduleReason").value="";document.getElementById("scheduleDate").value="";document.getElementById("scheduleTime").value="";
+}
+</script>
+</body>
+</html>

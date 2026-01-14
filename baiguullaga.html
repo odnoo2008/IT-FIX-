@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<title>Байгууллагын Dashboard</title>
+
+<style>
+/* ===== GLOBAL ===== */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+}
+button{
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.accept{background:#2563eb;color:#fff}
+.approve{background:#22c55e;color:#fff}
+.cancel{background:#ef4444;color:#fff}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:260px;
+  height:100vh;
+  position:fixed;
+  background:#192638;
+  padding-top:20px;
+}
+.sidebar a{
+  display:block;
+  padding:14px 20px;
+  color:#ddd;
+  cursor:pointer;
+}
+.sidebar a:hover{
+  background:#2563eb;
+  color:#fff;
+}
+
+/* ===== MAIN ===== */
+.main{
+  margin-left:280px;
+  padding:25px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  margin-bottom:20px;
+}
+.org-card{display:none}
+
+/* ===== FORM ===== */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+input,select,textarea{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #d1d5db;
+}
+label{font-size:13px;color:#374151}
+
+/* ===== TABLE ===== */
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #ddd}
+th{background:#e5e7eb}
+
+/* ===== BADGE ===== */
+.badge{
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:12px;
+}
+.pending{background:#fde68a}
+.done{background:#bbf7d0}
+
+/* ===== FEEDBACK ===== */
+.feedback-item{
+  background:#f9fafb;
+  border-left:4px solid #2563eb;
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+}
+.stars{color:#facc15;font-size:18px}
+
+/* ===== ORDER CARD ===== */
+.order-card{
+  background: linear-gradient(135deg,#ffffff,#f0f6ff);
+  border-left: 6px solid #2563eb;
+}
+
+.order-title{
+  margin-bottom:20px;
+  font-size:20px;
+  color:#1e3a8a;
+}
+
+/* ===== FORM ===== */
+.order-form .field{
+  display:flex;
+  flex-direction:column;
+}
+
+.order-form .field.full{
+  grid-column:1/3;
+}
+
+.order-form label{
+  font-size:13px;
+  color:#475569;
+  margin-bottom:4px;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #c7d2fe;
+  font-size:14px;
+  transition:.3s;
+  background:#fff;
+}
+
+.order-form input:focus,
+.order-form select:focus,
+.order-form textarea:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* ===== BUTTON ===== */
+.order-actions{
+  text-align:right;
+  margin-top:20px;
+}
+
+.order-btn{
+  background: linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;
+  padding:12px 22px;
+  font-size:14px;
+  border-radius:12px;
+  font-weight:bold;
+  transition:.3s;
+}
+
+.order-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(37,99,235,.4);
+}
+.section-title{
+  font-size:18px;
+  margin-bottom:15px;
+  color:#1e3a8a;
+}
+
+/* FILTER */
+.filter-bar{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+.filter-bar select,
+.filter-bar input{
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid #c7d2fe;
+}
+
+/* TABLE */
+.order-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.order-table th{
+  background:#e0e7ff;
+  color:#1e3a8a;
+}
+.order-table th,
+.order-table td{
+  padding:10px;
+  border-bottom:1px solid #e5e7eb;
+}
+.order-table tr:hover{
+  background:#f8fafc;
+}
+
+/* STATUS */
+.status{
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:bold;
+}
+.pending{background:#fde68a;color:#92400e;}
+.inprogress{background:#bfdbfe;color:#1e40af;}
+.done{background:#bbf7d0;color:#065f46;}
+.cancelled{background:#fecaca;color:#7f1d1d;}
+
+/* BUTTON */
+.action-btn{
+  padding:6px 10px;
+  font-size:12px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+}
+.cancel{background:#ef4444;color:#fff;}
+.pause{background:#f59e0b;color:#fff;}
+.rate{background:#22c55e;color:#fff;}
+
+</style>
+</head>
+  <div class="container navbar">
+    <a href="/pages/index.html"><div class="logo">💻 Компьютер Засвар – Байгууллага</div></a>
+  
+  </div>
+<body>
+
+<div class="sidebar">
+  <a onclick="show('order')">🛠 Захиалга өгөх</a>
+  <a onclick="show('myOrders')">📋 Миний хүсэлтүүд</a>
+  <a onclick="show('notifications')">🔔 Мэдэгдэл</a>
+  <a onclick="show('feedback')">💬 Сэтгэгдэл / Чат</a>
+  <a onclick="show('profile')">🏢 Миний профайл</a>
+  <a onclick="show('schedule')">⏰ Цаг захиалах</a>
+</div>
+
+<div class="main">
+
+<!-- 1️⃣ Захиалга өгөх -->
+<div id="order" class="card org-card order-card" style="display:block">
+  <h3 class="order-title">🛠 Засварын захиалга</h3>
+
+  <div class="form-grid order-form">
+
+    <div class="field">
+      <label>Засварын төрөл</label>
+      <select>
+        <option>Hardware</option>
+        <option>Software</option>
+        <option>Internet</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Үйлчилгээ авах төрөл</label>
+      <select>
+        <option>Салбар дээр очиж</option>
+        <option>Дуудлагаар очих</option>
+        <option>Шуудангаар илгээх</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Байршил</label>
+      <input placeholder="Хаяг / Салбар">
+    </div>
+
+    <div class="field">
+      <label>Яаралтай эсэх</label>
+      <select>
+        <option>Энгийн</option>
+        <option>⚠ Яаралтай</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Ажлын нэр</label>
+      <input placeholder="Ж: Компьютер асахгүй">
+    </div>
+
+    <div class="field full">
+      <label>Дэлгэрэнгүй тайлбар</label>
+      <textarea rows="3" placeholder="Асуудлын дэлгэрэнгүй..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Эхлэх огноо</label>
+      <input type="date">
+    </div>
+
+    <div class="field">
+      <label>Дуусах огноо</label>
+      <input type="date">
+    </div>
+
+  </div>
+
+  <div class="order-actions">
+    <button class="order-btn">🚀 Захиалга илгээх</button>
+  </div>
+</div>
+
+<!-- 2️⃣ Миний хүсэлтүүд -->
+<div id="myOrders" class="card org-card">
+  <h3 class="section-title">📋 Миний илгээсэн хүсэлтүүд</h3>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <select>
+      <option>Бүх төлөв</option>
+      <option>Хүлээгдэж буй</option>
+      <option>Гүйцэтгэж буй</option>
+      <option>Дууссан</option>
+      <option>Цуцлагдсан</option>
+    </select>
+
+    <input type="date">
+  </div>
+
+  <!-- Table -->
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Ажлын нэр</th>
+        <th>Төрөл</th>
+        <th>Огноо</th>
+        <th>Төлөв</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Сүлжээ тохиргоо</td>
+        <td>Internet</td>
+        <td>2026-03-12</td>
+        <td><span class="status pending">Хүлээгдэж буй</span></td>
+        <td>
+          <button class="action-btn cancel">Цуцлах</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>2</td>
+        <td>Компьютер формат</td>
+        <td>Software</td>
+        <td>2026-03-05</td>
+        <td><span class="status inprogress">Гүйцэтгэж буй</span></td>
+        <td>
+          <button class="action-btn pause">Түр зогсоох</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>3</td>
+        <td>Эвдэрсэн дэлгэц</td>
+        <td>Hardware</td>
+        <td>2026-02-20</td>
+        <td><span class="status done">Дууссан</span></td>
+        <td>
+          <button class="action-btn rate">Үнэлэх</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+document.querySelectorAll(".cancel").forEach(btn=>{
+  btn.onclick=()=>alert("❌ Хүсэлт цуцлагдлаа");
+});
+document.querySelectorAll(".pause").forEach(btn=>{
+  btn.onclick=()=>alert("⏸ Түр зогсоолоо");
+});
+document.querySelectorAll(".rate").forEach(btn=>{
+  btn.onclick=()=>alert("⭐ Үнэлгээ өгөх цонх нээгдэнэ");
+});
+</script>
+
+
+<!-- 3️⃣ Мэдэгдэл -->
+<!-- 3️⃣ Мэдэгдэл -->
+<div id="notifications" class="card org-card">
+  <h3 class="section-title">🔔 Мэдэгдэл</h3>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <select id="notifFilter">
+      <option value="all">Бүгд</option>
+      <option value="new">Шинэ</option>
+      <option value="done">Дууссан</option>
+      <option value="urgent">Яаралтай</option>
+    </select>
+    <input type="date" id="notifDate">
+  </div>
+
+  <!-- Table -->
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Мэдэгдэл</th>
+        <th>Төлөв</th>
+        <th>Огноо</th>
+        <th>Үйлдэл</th>
+      </tr>
+    </thead>
+    <tbody id="notifTableBody">
+      <tr>
+        <td>1</td>
+        <td>Hardware засвар амжилттай дууслаа</td>
+        <td><span class="status done">Дууссан</span></td>
+        <td>2026-03-12</td>
+        <td>
+          <button class="action-btn rate">Үнэлэх</button>
+        </td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Software засвар гүйцэтгэж эхэллээ</td>
+        <td><span class="status inprogress">Гүйцэтгэж буй</span></td>
+        <td>2026-03-13</td>
+        <td>
+          <button class="action-btn view">Дэлгэрэнгүй</button>
+        </td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Internet засвар удааширч байна ⚠</td>
+        <td><span class="status pending">Яаралтай</span></td>
+        <td>2026-03-14</td>
+        <td>
+          <button class="action-btn view">Дэлгэрэнгүй</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Товчлууруудын үйлдэл
+document.querySelectorAll(".rate").forEach(btn=>{
+  btn.onclick=()=>alert("⭐ Мэдэгдлийг үнэлэх цонх нээгдэнэ");
+});
+document.querySelectorAll(".view").forEach(btn=>{
+  btn.onclick=()=>alert("🔍 Мэдэгдлийн дэлгэрэнгүй харах");
+});
+
+// Фильтер хийх боломж (он/төлөвөөр)
+document.getElementById('notifFilter').addEventListener('change', filterNotifications);
+document.getElementById('notifDate').addEventListener('change', filterNotifications);
+
+function filterNotifications(){
+  const filter = document.getElementById('notifFilter').value;
+  const date = document.getElementById('notifDate').value;
+  const rows = document.querySelectorAll('#notifTableBody tr');
+
+  rows.forEach(row=>{
+    let status = row.querySelector('.status').textContent.toLowerCase();
+    let rowDate = row.cells[3].textContent;
+
+    let show = true;
+    if(filter!=='all' && !status.includes(filter)) show = false;
+    if(date && rowDate!==date) show = false;
+
+    row.style.display = show ? '' : 'none';
+  });
+}
+</script>
+
+
+<!-- 4️⃣ Сэтгэгдэл -->
+<!-- <div id="feedback" class="card org-card">
+<h3>💬 Сэтгэгдэл / Чат</h3>
+<textarea rows="3" placeholder="Санал бичих..."></textarea>
+<br><br>
+<button class="accept">Илгээх</button>
+
+<div class="feedback-item">
+<b>Админ:</b>
+<p>Таны хүсэлтийг хүлээн авлаа.</p>
+</div>
+</div> -->
+<!-- 4️⃣ Сэтгэгдэл / Чат -->
+<div id="feedback" class="card org-card">
+  <h3 class="section-title">💬 Сэтгэгдэл / Чат</h3>
+
+  <!-- Шинэ сэтгэгдэл бичих -->
+  <textarea id="feedbackInput" rows="3" placeholder="Санал бичих..."></textarea>
+  <br><br>
+  <button class="accept" onclick="addFeedback()">Илгээх</button>
+
+  <!-- Сэтгэгдлийн жагсаалт -->
+  <div id="feedbackList">
+    <!-- Өмнөх сэтгэгдлүүд жишээ -->
+    <div class="feedback-item"><b>Админ:</b><p>Таны хүсэлтийг хүлээн авлаа.</p></div>
+  </div>
+</div>
+
+<style>
+/* FEEDBACK / CHAT */
+#feedbackInput{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #c7d2fe;
+  font-size:14px;
+  resize:none;
+  transition:.3s;
+}
+#feedbackInput:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+#feedback .accept{
+  background: linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;
+  padding:10px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  transition:.3s;
+}
+#feedback .accept:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 15px rgba(37,99,235,.4);
+}
+
+/* Сэтгэгдлийн жагсаалт */
+#feedbackList{
+  max-height:300px;
+  overflow-y:auto;
+  margin-top:15px;
+  padding-right:5px;
+}
+
+/* Сэтгэгдлийн элемент */
+.feedback-item{
+  background:#f9fafb;
+  border-left:4px solid #2563eb;
+  padding:10px 12px;
+  border-radius:8px;
+  margin-bottom:10px;
+  word-wrap:break-word;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+.feedback-item b{color:#1e3a8a;}
+.feedback-item p{
+  margin:5px 0 0 0;
+  font-size:14px;
+  color:#374151;
+  line-height:1.4;
+}
+</style>
+
+<script>
+// Шинэ сэтгэгдэл нэмэх функц
+function addFeedback(){
+  const input = document.getElementById("feedbackInput");
+  const text = input.value.trim();
+  if(text===""){
+    alert("❌ Сэтгэгдэл хоосон байна!");
+    return;
+  }
+
+  const feedbackList = document.getElementById("feedbackList");
+  const div = document.createElement("div");
+  div.className = "feedback-item";
+  div.innerHTML = `<b>Байгууллага:</b><p>${text}</p>`;
+
+  feedbackList.appendChild(div);
+  input.value="";
+
+  // Scroll доош гүйлгэх
+  feedbackList.scrollTop = feedbackList.scrollHeight;
+}
+</script>
+
+<!-- 5️⃣ Профайл -->
+<!-- 5️⃣ Миний профайл -->
+<div id="profile" class="card org-card">
+  <h3 class="section-title">🏢 Миний профайл</h3>
+
+  <div class="form-grid">
+    <div class="field"><label>Байгууллагын нэр</label><input id="orgName" placeholder="Байгууллагын нэр"></div>
+    <div class="field"><label>Регистр</label><input id="orgReg" placeholder="Регистр"></div>
+    <div class="field"><label>Имэйл</label><input id="orgEmail" placeholder="Имэйл"></div>
+    <div class="field"><label>Утас</label><input id="orgPhone" placeholder="Утас"></div>
+    <div class="field"><label>Факс</label><input id="orgFax" placeholder="Факс"></div>
+    <div class="field"><label>Хаяг</label><input id="orgAddress" placeholder="Хаяг"></div>
+  </div>
+
+  <br>
+  <button class="approve" onclick="saveProfile()">Хадгалах</button>
+</div>
+
+<style>
+/* PROFILE SECTION */
+#profile input{
+  width:100%;
+  padding:8px 10px;
+  border-radius:6px;
+  border:1px solid #c7d2fe;
+  font-size:14px;
+  transition:.3s;
+}
+#profile input:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* Хадгалах товч */
+#profile .approve{
+  background: linear-gradient(135deg,#22c55e,#15803d);
+  color:#fff;
+  padding:10px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  transition:.3s;
+}
+#profile .approve:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 15px rgba(37,99,235,.4);
+}
+</style>
+
+<script>
+// Профайлыг хадгалах
+function saveProfile(){
+  const name = document.getElementById("orgName").value.trim();
+  const reg = document.getElementById("orgReg").value.trim();
+  const email = document.getElementById("orgEmail").value.trim();
+  const phone = document.getElementById("orgPhone").value.trim();
+  const fax = document.getElementById("orgFax").value.trim();
+  const address = document.getElementById("orgAddress").value.trim();
+
+  if(!name || !reg || !email){
+    alert("❌ Байгууллагын нэр, регистр, имэйл заавал бөглөх шаардлагатай!");
+    return;
+  }
+
+  alert("✅ Профайл амжилттай хадгалагдлаа!\n\n" +
+        "Байгууллагын нэр: "+name+"\n"+
+        "Регистр: "+reg+"\n"+
+        "Имэйл: "+email+"\n"+
+        "Утас: "+phone+"\n"+
+        "Факс: "+fax+"\n"+
+        "Хаяг: "+address);
+}
+</script>
+
+
+<!-- 6️⃣ Цаг захиалах -->
+<!-- 6️⃣ Цаг захиалах -->
+<div id="schedule" class="card org-card">
+  <h3 class="section-title">⏰ Цаг захиалах</h3>
+
+  <!-- Шалтгаан -->
+  <label for="scheduleReason">Цаг захиалах шалтгаан:</label>
+  <textarea id="scheduleReason" rows="3" placeholder="Шалтгаан бичнэ үү..."></textarea>
+
+  <br><br>
+
+  <!-- Өдөр ба цаг -->
+  <div class="form-grid">
+    <div class="field"><label>Огноо</label><input type="date" id="scheduleDate"></div>
+    <div class="field"><label>Цаг</label><input type="time" id="scheduleTime"></div>
+  </div>
+
+  <br>
+  <button class="accept" onclick="bookSchedule()">Цаг захиалах</button>
+</div>
+
+<style>
+/* SCHEDULE SECTION */
+#schedule textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #c7d2fe;
+  font-size:14px;
+  resize:none;
+  transition:.3s;
+}
+#schedule textarea:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* Өдөр ба цаг */
+#schedule input{
+  width:100%;
+  padding:8px 10px;
+  border-radius:6px;
+  border:1px solid #c7d2fe;
+  font-size:14px;
+  transition:.3s;
+}
+#schedule input:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* Илгээх товч */
+#schedule .accept{
+  background: linear-gradient(135deg,#2563eb,#1e40af);
+  color:#fff;
+  padding:10px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  transition:.3s;
+}
+#schedule .accept:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 15px rgba(37,99,235,.4);
+}
+</style>
+
+<script>
+// Цаг захиалах функц
+function bookSchedule(){
+  const reason = document.getElementById("scheduleReason").value.trim();
+  const date = document.getElementById("scheduleDate").value;
+  const time = document.getElementById("scheduleTime").value;
+
+  if(!reason || !date || !time){
+    alert("❌ Бүх талбарыг бөглөнө үү!");
+    return;
+  }
+
+  alert(`✅ Цаг захиалга амжилттай илгээгдлээ!\n\n`+
+        `Шалтгаан: ${reason}\n`+
+        `Огноо: ${date}\n`+
+        `Цаг: ${time}`);
+  
+  // Input талбарыг хоослох
+  document.getElementById("scheduleReason").value = "";
+  document.getElementById("scheduleDate").value = "";
+  document.getElementById("scheduleTime").value = "";
+}
+</script>
+
+
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.org-card').forEach(x=>x.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+</script>
+
+</body>
+</html>

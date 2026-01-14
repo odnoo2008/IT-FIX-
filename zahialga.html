@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/zahialga.css">
+    <script defer src="../js/zahialga.js"></script>
+</head>
+<body>
+    <div class="order-container">
+  <h2>🛠 Засварын захиалга өгөх</h2>
+
+  <form id="repairForm">
+    <label>Засварын төрөл</label>
+    <select required>
+      <option value="">Сонгох</option>
+      <option>Internet</option>
+      <option>Төхөөрөмж</option>
+      <option>Программ</option>
+    </select>
+
+    <label>Байршил</label>
+    <input type="text" placeholder="Ж: 3-р хороо" required>
+
+    <label>Гүйцэтгэх ажлын нэр</label>
+    <input type="text" required>
+
+    <label>Дэлгэрэнгүй тайлбар</label>
+    <textarea rows="4"></textarea>
+<!-- 
+    <div class="date-group">
+      <div>
+        <label>Эхлэх огноо</label>
+        <input type="date" required>
+      </div>
+      <div>
+        <label>  Дуусах огноо</label>
+        <input type="date" required>
+      </div>
+    </div> -->
+
+    <button type="submit">Захиалга илгээх</button>
+
+    <script>
+document.getElementById("repairForm").addEventListener("submit", e => {
+  e.preventDefault();
+  alert("✅ Засварын захиалга амжилттай илгээгдлээ");
+  e.target.reset();
+});
+</script> 
+  </form>
+</div>
+</body>
+</html>
